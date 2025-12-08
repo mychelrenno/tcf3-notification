@@ -1,0 +1,190 @@
+{
+	"info": {
+		"_postman_id": "01760dce-a058-4548-b1f7-baa074f9d871",
+		"name": "tcf3-notification - Testes de Serviço",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2641780"
+	},
+	"item": [
+		{
+			"name": "Health Check (Status UP)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status da Resposta é 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Status Geral é UP\", function () {",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.status).to.eql(\"UP\");",
+							"});",
+							"",
+							"pm.test(\"Kafka e Email estão UP\", function () {",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.kafka).to.eql(\"UP\");",
+							"    pm.expect(response.email).to.eql(\"UP\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/{{api_path}}/status",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"{{api_path}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cenário 1: Envio de Mensagem Válida (Sucesso)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status da Resposta é 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Mensagem de Sucesso Correta\", function () {",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.message).to.eql(\"Mensagem de agendamento enviada com sucesso para o Kafka.\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"emailPaciente\": \"{{email_valido}}\",\n    \"nomePaciente\": \"{{nome_paciente}}\",\n    \"dataAtendimento\": \"{{data_valida}}\",\n    \"horaAtendimento\": \"{{hora_valida}}\",\n    \"nomeResponsavel\": \"{{responsavel}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}{{api_path}}/enviar",
+					"host": [
+						"{{base_url}}{{api_path}}"
+					],
+					"path": [
+						"enviar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cenário 2: Falha de Validação (Data Inválida)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status da Resposta é 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Mensagem de Erro de Data\", function () {",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.message).to.include(\"dataAtendimento\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"emailPaciente\": \"{{email_valido}}\",\n    \"nomePaciente\": \"{{nome_paciente}}\",\n    \"dataAtendimento\": \"{{data_invalida}}\",\n    \"horaAtendimento\": \"{{hora_valida}}\",\n    \"nomeResponsavel\": \"{{responsavel}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}{{api_path}}/enviar",
+					"host": [
+						"{{base_url}}{{api_path}}"
+					],
+					"path": [
+						"enviar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cenário 3: Falha de Validação (Email Inválido)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status da Resposta é 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Mensagem de Erro de Email\", function () {",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.message).to.include(\"emailPaciente\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"emailPaciente\": \"{{email_invalido}}\",\n    \"nomePaciente\": \"{{nome_paciente}}\",\n    \"dataAtendimento\": \"{{data_valida}}\",\n    \"horaAtendimento\": \"{{hora_valida}}\",\n    \"nomeResponsavel\": \"{{responsavel}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}{{api_path}}/enviar",
+					"host": [
+						"{{base_url}}{{api_path}}"
+					],
+					"path": [
+						"enviar"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

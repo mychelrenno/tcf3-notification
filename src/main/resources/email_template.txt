@@ -1,0 +1,4 @@
+Prezado [nome do paciente], você possui um atendimento com [nome do responsável pelo atendimento] agendado para o dia [data do agendamento] às [hora do agendamento].
+
+Atenciosamente,
+Equipe de atendimento

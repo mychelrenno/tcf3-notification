@@ -1,12 +1,3 @@
-# .gitignore - padrão de mercado para projetos Java / Spring Boot / Maven
-
-# Sistema operacional
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
 # IDEs e editores
 .idea/
 *.iml
@@ -43,15 +34,6 @@ dependency-reduced-pom.xml
 /mvnw
 /mvnw.cmd
 
-# Gradle (se aplicável)
-.gradle/
-/build/
-
-# Eclipse
-.project
-.classpath
-.settings/
-
 # Test / coverage / reports
 jacoco.exec
 coverage/
@@ -68,41 +50,8 @@ log/
 # JVM crash logs
 hs_err_pid*
 
-# Keystores / certificados / segredos
-*.jks
-*.keystore
-*.pem
-*.p12
-.env
-.env.*
-credentials.properties
-secrets.properties
-
-# Docker
-docker-compose.override.yml
-docker-compose.*.yml
-
-# Containers / packaging
-.Dockerfile.swp
-
-# CI / tooling
-.gradle-cache/
-
-# Node / frontend (se houver frontend no repo)
-node_modules/
-dist/
-build/
-
 # Outros
 coverage/
 .idea_modules/
 
-# Ignore arquivos específicos de configuração local do projeto
-/local.properties
-
-# Arquivos do sistema que podem aparecer em Windows
-Thumbs.db
-Desktop.ini
-
-# Fin
 
