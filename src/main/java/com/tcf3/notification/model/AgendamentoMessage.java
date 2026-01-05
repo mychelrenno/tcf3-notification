@@ -30,6 +30,8 @@ public class AgendamentoMessage {
     @NotBlank(message = "O nome do responsável pelo atendimento é obrigatório.")
     private String nomeResponsavel;
 
+    private Boolean cancelado;
+
     // Opcional: Adicionar um método toString para facilitar o log
     @Override
     public String toString() {
@@ -39,6 +41,7 @@ public class AgendamentoMessage {
                 ", dataAtendimento='" + dataAtendimento + '\'' +
                 ", horaAtendimento='" + horaAtendimento + '\'' +
                 ", nomeResponsavel='" + nomeResponsavel + '\'' +
+                ", cancelado='" + cancelado + '\'' +
                 '}';
     }
 }

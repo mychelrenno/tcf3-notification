@@ -66,6 +66,8 @@ class KafkaIntegrationTest {
         }
         // Desabilita o envio de e-mail para o teste de integração
         registry.add("spring.mail.host", () -> "mock-smtp-host"); 
+        // Define o group-id usado pelo consumer nas propriedades de teste
+        registry.add("spring.kafka.consumer.group-id", () -> "tcf3-notification-group");
     }
 
     @Autowired
@@ -103,7 +105,7 @@ class KafkaIntegrationTest {
         // Arrange
         // Mensagem inválida: data no formato errado (dd/mm/aaaa)
         AgendamentoMessage invalidMessage = new AgendamentoMessage(
-            "invalid@email.com", "Paciente Teste", "01/01/2026", "10:00", "Dr. Teste"
+            "invalid@email.com", "Paciente Teste", "01/01/2026", "10:00", "Dr. Teste", false
         );
 
         // Act
