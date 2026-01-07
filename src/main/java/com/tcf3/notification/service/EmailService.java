@@ -22,7 +22,9 @@ public class EmailService {
 
     private static final Logger log = LoggerFactory.getLogger(EmailService.class);
     private static final String TEMPLATE_PATH = "classpath:email_template.txt";
+    private static final String TEMPLATE_CANCELADO_PATH = "classpath:email_template_cancelamento.txt";
     private String emailTemplateCache; // Variável para armazenar o template em cache
+    private String emailTemplateCanceladoCache; // Variável para armazenar o template em cache
 
     @Autowired
     private JavaMailSender mailSender;
@@ -39,15 +41,23 @@ public class EmailService {
     @PostConstruct
     public void loadEmailTemplate() {
         try {
+            // Carrega o template padrão
             Resource resource = resourceLoader.getResource(TEMPLATE_PATH);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
                 emailTemplateCache = reader.lines().collect(Collectors.joining("\n"));
                 log.info("Template de e-mail carregado para o cache com sucesso.");
             }
+
+            // Carrega o template de cancelamento
+            Resource resourceCancel = resourceLoader.getResource(TEMPLATE_CANCELADO_PATH);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceCancel.getInputStream()))) {
+                emailTemplateCanceladoCache = reader.lines().collect(Collectors.joining("\n"));
+                log.info("Template de e-mail de cancelamento carregado para o cache com sucesso.");
+            }
         } catch (Exception e) {
-            log.error("Falha ao carregar o template de e-mail do caminho: {}", TEMPLATE_PATH, e);
-            // Lançar TemplateLoadException para evitar que o serviço inicie sem o template
-            throw new TemplateLoadException("Falha ao inicializar o EmailService: template de e-mail não encontrado ou inacessível.", e);
+            log.error("Falha ao carregar os templates de e-mail: {} e/ou {}", TEMPLATE_PATH, TEMPLATE_CANCELADO_PATH, e);
+            // Lançar TemplateLoadException para evitar que o serviço inicie sem os templates
+            throw new TemplateLoadException("Falha ao inicializar o EmailService: templates de e-mail não encontrados ou inacessíveis.", e);
         }
     }
 
@@ -57,15 +67,26 @@ public class EmailService {
             message.setFrom(mailFrom);
             // O e-mail de destino é o e-mail do paciente
             message.setTo(agendamento.getEmailPaciente());
-            message.setSubject("Confirmação de Agendamento de Atendimento");
-            
-            // Monta o corpo do e-mail usando o template em cache
-            String emailBody = emailTemplateCache
-                .replace("[nome do paciente]", agendamento.getNomePaciente())
-                .replace("[nome do responsável pelo atendimento]", agendamento.getNomeResponsavel())
-                .replace("[data do agendamento]", formatarData(agendamento.getDataAtendimento()))
-                .replace("[hora do agendamento]", agendamento.getHoraAtendimento());
-            
+            String emailBody = "";
+            if(agendamento.getCancelado()){
+                message.setSubject("Cancelamento de Agendamento de Atendimento");
+                // Monta o corpo do e-mail usando o template de cancelamento em cache
+                emailBody = emailTemplateCanceladoCache
+                        .replace("[nome do paciente]", agendamento.getNomePaciente())
+                        .replace("[nome do responsável pelo atendimento]", agendamento.getNomeResponsavel())
+                        .replace("[data do agendamento]", formatarData(agendamento.getDataAtendimento()))
+                        .replace("[hora do agendamento]", agendamento.getHoraAtendimento());
+            }else{
+                message.setSubject("Confirmação de Agendamento de Atendimento");
+                // Monta o corpo do e-mail usando o template em cache
+                emailBody = emailTemplateCache
+                        .replace("[nome do paciente]", agendamento.getNomePaciente())
+                        .replace("[nome do responsável pelo atendimento]", agendamento.getNomeResponsavel())
+                        .replace("[data do agendamento]", formatarData(agendamento.getDataAtendimento()))
+                        .replace("[hora do agendamento]", agendamento.getHoraAtendimento());
+
+            }
+
             message.setText(emailBody);
             
             // Envia o e-mail

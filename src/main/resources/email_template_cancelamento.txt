@@ -1,0 +1,5 @@
+Prezado [nome do paciente], seu atendimento com [nome do responsável pelo atendimento] agendado para o dia [data do agendamento] às [hora do agendamento] foi cancelado.
+Em caso de dúvidas, entre em contato conosco para mais informações.
+
+Atenciosamente,
+Equipe de atendimento

@@ -40,11 +40,13 @@ class EmailServiceTest {
 
     private final String TEMPLATE_CONTENT = "Prezado [nome do paciente], você possui um atendimento com [nome do responsável pelo atendimento] agendado para o dia [data do agendamento] às [hora do agendamento].\n\nAtenciosamente,\nEquipe de atendimento";
     private final String TEMPLATE_PATH = "classpath:email_template.txt";
+    private final String TEMPLATE_CANCEL_PATH = "classpath:email_template_cancelamento.txt";
 
     @BeforeEach
     void setUp() throws IOException {
         // Configuração do mock para o carregamento do template (mecanismo de cache)
         when(resourceLoader.getResource(TEMPLATE_PATH)).thenReturn(resource);
+        when(resourceLoader.getResource(TEMPLATE_CANCEL_PATH)).thenReturn(resource);
         InputStream inputStream = new ByteArrayInputStream(TEMPLATE_CONTENT.getBytes());
         when(resource.getInputStream()).thenReturn(inputStream);
 
@@ -63,7 +65,7 @@ class EmailServiceTest {
         assertNotNull(cached);
         assertEquals(TEMPLATE_CONTENT, cached);
 
-        // Verifica se o resourceLoader foi chamado apenas uma vez
+        // Verifica se o resourceLoader foi chamado apenas uma vez para o template padrão
         verify(resourceLoader, times(1)).getResource(TEMPLATE_PATH);
     }
 
@@ -96,7 +98,8 @@ class EmailServiceTest {
             "João Teste",
             "01012026",
             "10:30",
-            "Dr. Mockito"
+            "Dr. Mockito",
+            false
         );
 
         // Executa o método
@@ -124,7 +127,8 @@ class EmailServiceTest {
             "João Teste",
             "01012026",
             "10:30",
-            "Dr. Mockito"
+            "Dr. Mockito",
+            false
         );
 
         // Simula uma falha no envio do e-mail
